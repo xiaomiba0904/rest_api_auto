@@ -6,7 +6,7 @@ from rest_api_auto import _api_globals
 from rest_api_auto.utils import url_parameter_conversion
 
 
-class DispatchView(object):
+class BaseView(object):
 
     _route = {}
 
@@ -31,7 +31,7 @@ class DispatchView(object):
         return view_class
 
 
-class ListCreateApiView(DispatchView):
+class ListCreateApiView(BaseView):
 
     _route = {
         "GET": ListAPIView,
@@ -39,7 +39,7 @@ class ListCreateApiView(DispatchView):
     }
 
 
-class GetUpdateApiView(DispatchView):
+class GetUpdateApiView(BaseView):
 
     _route = {
         "GET": RetrieveAPIView,
