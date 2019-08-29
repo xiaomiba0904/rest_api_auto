@@ -21,7 +21,12 @@ class BaseView(object):
         if request.method not in self._route.keys():
             raise exceptions.MethodNotAllowed(request.method)
 
-        view_class = self.dispatch(request)
+        base_class = self.dispatch(request)
+        if base_class in self.manager.view_classes:
+            view_class = self.manager.view_classes[base_class]
+        else:
+            view_class = base_class
+
         return view_class.as_view()(request, *args, **kwargs)
 
     def dispatch(self, request):

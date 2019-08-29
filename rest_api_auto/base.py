@@ -1,5 +1,6 @@
 from collections import OrderedDict
 
+from django.http import JsonResponse
 from rest_framework.generics import CreateAPIView, UpdateAPIView, DestroyAPIView, ListAPIView, RetrieveAPIView
 from rest_framework.pagination import PageNumberPagination
 from rest_framework.response import Response
@@ -12,13 +13,22 @@ class DefaultPagination(PageNumberPagination):
     page_size = 10
 
     def get_paginated_response(self, data):
-        return Response(OrderedDict([
+        return self.get_json_response(data)
+
+    def get_default_response(self, data):
+        return Response(self.get_response_data(data))
+
+    def get_json_response(self, data):
+        return JsonResponse(self.get_response_data(data))
+
+    def get_response_data(self, data):
+        return OrderedDict([
             ('code', 200),
             ('count', self.page.paginator.count),
             ('next', self.get_next_link()),
             ('previous', self.get_previous_link()),
             ('results', data)
-        ]))
+        ])
 
 
 class APIManager(object):
@@ -36,6 +46,10 @@ class APIManager(object):
         self.name = name
         self.model = model
         self.actions = actions
+        self.view_classes = dict()
+        for a in self.actions:
+            if a not in self.ACTIONS_VIEW:
+                raise ValueError(f"不支持生成 {a} 操作")
         self.create_default_view()
 
     def get_default_queryset(self):
@@ -56,22 +70,17 @@ class APIManager(object):
         """
         创建对应的处理类
         """
-        self._view_classes = set()
         queryset = self.get_default_queryset()
         serializer_class = self.create_default_serializer()
 
         for a in self.actions:
-            if a not in self.ACTIONS_VIEW:
-                continue
-
-            for view in self.ACTIONS_VIEW[a]:
-                view_class = type(
-                    self.name + view.__name__, (view, ),
+            for base_view in self.ACTIONS_VIEW[a]:
+                model_view_class = type(
+                    self.name + base_view.__name__, (base_view, ),
                     {
                         "queryset": queryset,
                         "pagination_class": DefaultPagination,
                         "serializer_class": serializer_class
                     }
                 )
-                setattr(self, view_class.__name__.lower(), view_class)
-                self._view_classes.add(view_class)
+                self.view_classes[base_view] = model_view_class
