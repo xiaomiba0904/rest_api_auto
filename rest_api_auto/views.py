@@ -8,6 +8,7 @@ from rest_api_auto.utils import url_parameter_conversion
 
 class BaseView(object):
 
+    csrf_exempt = True
     _route = {}
 
     def __call__(self, request, *args, **kwargs):
