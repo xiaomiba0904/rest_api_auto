@@ -76,6 +76,10 @@ python setup install
     >>> get_response.json()
     {'id': 1, 'name': 'xiaomiba', 'age': 18, 'address': 'China', 'is_admin': False}
 
+    >>> update_response = requests.patch("http://127.0.0.1:8000/api/app_name/model_name/1/", data={"name":"new_name"})
+    >>> update_response.json()
+    {'id': 1, 'name': 'new_name', 'age': 18, 'address': 'China', 'is_admin': False}
+
     >>> del_response = resquest.delete("http://127.0.0.1:8000/api/app_name/model_name/1/")
     >>> del_response
     <Response [204]>
