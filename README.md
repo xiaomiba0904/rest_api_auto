@@ -51,3 +51,33 @@ python setup install
     python manage.py runserver
     ```
     
+5. 使用
+    ```
+    >>> data = {"name": "xiaomiba", "age": 18, "address": "China"}
+    >>> post_response = requests.post("http://127.0.0.1:8000/api/app_name/model_name/", data=data)
+    >>> post_response
+    <Response [201]>
+    >>> post_response.json()
+    {'id': 1, 'name': 'xiaomiba', 'age': 18, 'address': 'China', 'is_admin': False}
+    
+    >>> list_response = requests.get("http://127.0.0.1:8000/api/app_name/model_name/")
+    >>> list_response.json()
+    {'code': 200,
+     'count': 1,
+     'next': None,
+     'previous': None,
+     'results': [{'id': 1,
+       'name': 'xiaomiba',
+       'age': 18,
+       'address': 'China',
+       'is_admin': False}]}
+       
+    >>> get_response = requests.get("http://127.0.0.1:8000/api/app_name/model_name/1/")
+    >>> get_response.json()
+    {'id': 1, 'name': 'xiaomiba', 'age': 18, 'address': 'China', 'is_admin': False}
+
+    >>> del_response = resquest.delete("http://127.0.0.1:8000/api/app_name/model_name/1/")
+    >>> del_response
+    <Response [204]>
+
+    ```
