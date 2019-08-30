@@ -51,8 +51,8 @@ python setup install
     python manage.py runserver
     ```
     
-5. 使用
-    ```
+5. 使用 url
+    ```python
     >>> data = {"name": "xiaomiba", "age": 18, "address": "China"}
     >>> post_response = requests.post("http://127.0.0.1:8000/api/app_name/model_name/", data=data)
     >>> post_response
@@ -79,5 +79,10 @@ python setup install
     >>> del_response = resquest.delete("http://127.0.0.1:8000/api/app_name/model_name/1/")
     >>> del_response
     <Response [204]>
-
     ```
+    url路径参数为： 前缀 / app名称 / model名称 /
+   
+    如果需要修改路径可以在`register_model`函数的`name`参数指定,如
+    `register_model(name="user.info")`，访问的url: `http://127.0.0.1:8000/api/user/info/`
+    
+    
