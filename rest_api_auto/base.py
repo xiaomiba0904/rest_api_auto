@@ -10,7 +10,6 @@ from rest_api_auto import CRUD
 
 
 class DefaultPagination(PageNumberPagination):
-    page_size = 10
 
     def get_paginated_response(self, data):
         return self.get_json_response(data)
